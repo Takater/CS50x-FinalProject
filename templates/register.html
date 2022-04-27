@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+    <form action="/register" method="post">
+        <div class="mb-3">
+            <input required autocomplete="off" onblur="checkforname(this.value)" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text">
+            <p id="user_check" class="blurred-bg"></p>
+        </div>
+        <div class="mb-3">
+            <div class="popup">
+            <input required class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password" onfocus="showpopup()" onblur="closepopup()" oninput="checkpw(this.value)">
+            <span class="popuptext" id="pwd_popup">• 1st character MUST be a letter;<br>• Use at least 6 characters;<br>• Include at least a number or a special character;<br>• Optionally, include capitalized and non-capitalized letters</span>
+            </div>
+            <div class="progress progress-sm mt-1">
+                <div id="progress" class="p-bar progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <input required class="form-control mx-auto w-auto" id="confirmation" name="confirmation" placeholder="Confirm password" type="password" oninput="confirm_pw(this.value)">
+            <p class="blurred-bg" id="conf_pw">{{message}}</p>
+        </div>
+        <button id="registerbtn" class="btn btn-danger" type="submit">Register</button>
+    </form>
+    <script>
+    let username = document.getElementById("username");
+    username.addEventListener('input', async function(){
+        document.getElementById("user_check").innerHTML = "";
+        document.getElementById("registerbtn").disabled = false;
+        let response = await fetch('/search?username=' + username.value);
+        let check = await response.json();
+        if (check != "404") {
+            document.getElementById("user_check").innerHTML = "Username already in use";
+            document.getElementById("registerbtn").disabled = true;
+        }
+    });
+
+    function checkforname(username){
+        if (username.length == 0) {
+            document.getElementById("user_check").innerHTML = "Type username";
+        }
+    }
+
+    function confirm_pw(conf) {
+        pw = document.getElementById("password").value;
+        if (conf != pw && conf != "") {
+            if(checkpw(pw) == 1) {
+                document.getElementById("conf_pw").innerHTML = "Invalid password";
+                document.getElementById("registerbtn").disabled = true;
+            }
+            document.getElementById("conf_pw").innerHTML = "Passwords are not the same";
+            document.getElementById("registerbtn").disabled = true;
+        } else {
+            if(checkpw(pw) == 1) {
+                document.getElementById("conf_pw").innerHTML = "Invalid password";
+                document.getElementById("registerbtn").disabled = true;
+                return
+            }
+            document.getElementById("conf_pw").innerHTML = "";
+            document.getElementById("registerbtn").disabled = false;
+        }
+    }
+
+    function showpopup() {
+        var popup = document.getElementById("pwd_popup");
+        popup.classList.toggle("show");
+    }
+
+    function closepopup() {
+        var popup = document.getElementById("pwd_popup");
+        popup.classList.toggle("show");
+    }
+
+    function checkpw(pw) {
+        var prog = document.getElementById("progress");
+        var pw_easy = /^[A-Za-z]+$/;
+        var pw_med = /^((?=.*\d)|(?=.*[!@#$%^&*]))((?=.*[a-z])|(?=.*[A-Z])).{6,15}$/;
+        var pw_strong = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])(?!.*\s).{8,15}$/;
+        if (pw.match(pw_easy) || !(pw.charAt(0).match(pw_easy))) {
+            document.getElementById("conf_pw").innerHTML = "Invalid password";
+            prog.style.width = "33%";
+            prog.classList.remove("bg-success", "bg-warning");
+            prog.classList.add("bg-danger");
+            document.getElementById("registerbtn").disabled = true;
+            return 1
+        }
+        if(pw.length < 6) {
+            document.getElementById("conf_pw").innerHTML = "Invalid password";
+            prog.style.width = "33%";
+            prog.classList.remove("bg-success", "bg-warning");
+            prog.classList.add("bg-danger");
+            document.getElementById("registerbtn").disabled = true;
+            return 1
+        }
+        if ((pw.match(pw_med) && (pw.charAt(0).match(pw_easy))) && !(pw.match(pw_strong))) {
+            document.getElementById("conf_pw").innerHTML = "";
+            prog.style.width = "66%";
+            prog.classList.remove("bg-success", "bg-danger");
+            prog.classList.add("bg-warning");
+            document.getElementById("registerbtn").disabled = false;
+            return 0
+        }
+        if (pw.match(pw_strong) && (pw.charAt(0).match(pw_easy))) {
+            prog.style.width = "100%";
+            prog.classList.remove("bg-warning", "bg-danger");
+            prog.classList.add("bg-success");
+            document.getElementById("registerbtn").disabled = false;
+            return 0
+        }
+        if (pw == "") {
+            prog.style.width = "0%";
+            prog.classList.remove("bg-success", "bg-warning", "bg-danger");
+            document.getElementById("registerbtn").disabled = true;
+            return 1
+        }
+    }
+    </script>
+{% endblock %}

@@ -1,0 +1,228 @@
+body {
+    -webkit-font-smoothing: antialiased;
+}
+
+main {
+    top: 20%;
+    left: 8%;
+}
+
+form > button {
+    width: 100%;
+}
+
+nav .navbar-brand
+{
+    font-size: xx-large;
+    background: linear-gradient(
+        to right,
+        hsl(360, 100%, 50%),
+        hsl(315, 80%, 54%),
+        hsl(250, 50%, 54%),
+        hsl(315, 80%, 54%)
+    );
+    background-clip: 0;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+nav .navbar-brand-2
+{
+    font-size: xx-large;
+    background: linear-gradient(
+        to right,
+        hsl(100, 100%, 50%),
+        hsl(200, 80%, 54%),
+        hsl(440, 50%, 54%)
+    );
+    background-clip: 0;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+nav .navbar-brand-3
+{
+    font-size: xx-large;
+    top: 100%;
+    background: linear-gradient(
+        to right,
+        hsl(800, 100%, 50%),
+        hsl(800, 80%, 54%),
+        hsl(800, 80%, 54%),
+        hsl(000, 80%, 54%),
+        hsl(000, 50%, 54%)
+    );
+    background-clip: 0;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav > li {
+    margin-right: 5px;
+}
+
+.blurred-bg {
+    margin: auto;
+    background-color: #ffffff10;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+nav .nav-link {
+    color: white;
+}
+nav .nav-link:hover {
+    top: 50%;
+    background: linear-gradient(
+        to right,
+        hsl(000, 100%, 50%),
+        hsl(200, 80%, 54%),
+        hsl(600, 80%, 54%),
+        hsl(900, 50%, 54%),
+        hsl(900, 50%, 54%),
+        hsl(000, 100%, 50%),
+        hsl(200, 80%, 54%),
+        hsl(600, 80%, 54%)
+    );
+    background-clip: 0;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.game-window {
+    width: 15vw;
+    height: 10vw;
+    opacity: 0.6;
+}
+.game-window:hover {
+    opacity: 1;
+}
+
+.trivia-form {
+    width: 50%;
+    margin: auto;
+}
+
+#trivia-btn {
+    width: 50%;
+    margin: auto;
+}
+
+label[type="radio"] {
+    font-size: 1.5em;
+    color: black;
+}
+
+.clock {
+    padding: 5px;
+}
+
+#overlay {
+    position: fixed;
+    display: none;
+    font-weight: bold;
+    text-decoration: underline;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 20%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#overlay-shown {
+    position: fixed;
+    display: block;
+    font-weight: bold;
+    text-decoration: underline;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 20%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+div[id="overlay-shown"] h4{
+    text-decoration: none;
+}
+
+#ngamebtn:hover {
+    background-color: #55ffff;
+}
+
+form img[src^="/static/store"] {
+    width: 70%;
+}
+
+/*  ####################################################################################################################################
+    ##############################                                                            ##########################################
+    ##############################             Earth and moon background effect               ##########################################
+    ##############################    Original code at https://codepen.io/donovanh/pen/qmNgXW ##########################################
+    ##############################                                                            ##########################################
+    ####################################################################################################################################
+*/
+
+.earth-demo {
+    background: #000;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+}
+.earth-demo:before {
+    background: url(https://cssanimation.rocks/images/random/space2.jpg) repeat center;
+    background-size: cover;
+    content: "";
+    opacity: 0.5;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+.earth {
+    position: absolute;
+    top: calc(50% - 100px);
+    left: calc(50% - 100px);
+}
+.earth img {
+    height: 200px;
+    width: 200px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.moon-container {
+    position: absolute;
+    top: calc(50% - 25px);
+    left: calc(50% - 25px);
+}
+.moon {
+    animation: spin 20s linear infinite;
+    background: none;
+    width: 50px;
+    height: 50px;
+    pointer-events: none;
+    transform-origin: 25px;
+}
+.moon img {
+    transform: translateX(-160px) translateY(-160px);
+    width: 50px;
+}
+.earth img, .moon img {
+    border-radius: 50%;
+    box-shadow: 0 0 12em 1em rgba(110, 140, 200, .6);
+}
+* {
+    transition: all 4s cubic-bezier(0, 1.5, 0.3, 1);
+}
+@keyframes spin {
+    to {
+        transform: rotateZ(360deg);
+   }
+}

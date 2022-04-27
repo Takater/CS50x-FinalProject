@@ -1,0 +1,91 @@
+{% extends "homepage.html" %}
+
+{% block title %}TRIVIA{% endblock %}
+
+{% block main %}
+    <div class="container blurred-bg">
+        <div class="container-fluid">
+            <h1 class="text-info text-center">TRIVIA</h1>
+        </div>
+        {% if (rows | int) >= (row | int) %}
+            <form id="trivia-question" class="trivia-form form-check text-white rounded" action="/trivia/question?row={{questions_dict['row']}}" method="POST">
+            <h5 class="text-white font-weight-bold">Category: {{questions_dict['theme']}}</h5><br>
+            <span id="timer" class="clock rounded-circle border border-dark bg-success fs-3 font-weight-bold text-dark">15</span><br><br>
+            <h4>{{row}} / {{rows}}</h4>
+                <h4 class="text-dark">Q: {{questions_dict['question']}}</h4>
+                {% for answer in questions_dict['answers'] %}
+                    {% if answer == questions_dict['correct'] %}
+                    <input type="radio" id="c_ans" name="question{{questions_dict['row']}}">
+                    <label type="radio" id="c_question_label" name="question_label" for="c_ans">{{answer}}</label><br>
+                    {% else %}
+                    <input type="radio" name="question{{questions_dict['row']}}" id="{{answer}}">
+                    <label type="radio" name="question_label" for="{{answer}}">{{answer}}</label><br>
+                    {% endif %}
+                {% endfor %}
+            <button id="trivia-btn" class="btn btn-primary" type="button">NEXT</button>
+            </form>
+        {% else %}
+            <h2 class="text-success"> FINISH! You got {{answers}}/{{rows}} correct!</h2><br>
+
+            <h4 class="text-primary"> Coins earned: {{rewards['coins']}} </h4><br>
+            <h4 class="text-primary"> XP earned: {{rewards['xp']}} </h4><br>
+            <a href="/trivia"><button class="btn btn-primary" id="trivia-btn">PLAY MORE!</button></a>
+        {% endif %}
+    </div>
+    <script>
+        let question = JSON.parse({{ row | tojson }});
+        let questions = JSON.parse({{ rows | tojson }});
+        window.addEventListener('load', async function(){
+            const classes = ['bg-info', 'bg-danger', 'bg-warning'];
+            let trivia = document.getElementById("trivia-question");
+            trivia.classList.add(classes[Math.floor(Math.random() * classes.length)]);
+            if (question == questions){
+                document.getElementById("trivia-btn").innerHTML = 'FINISH';
+            }
+        });
+        let start = "";
+        document.getElementById("trivia-btn").addEventListener('click', async function(){
+            if (question == 1){
+                start = "&start=true";
+            } else {
+                start = "";
+            }
+            let correct = document.getElementById("c_ans");
+            let correct_url;
+            if (correct.checked){
+                correct_url = "&correct=1";
+                document.getElementById("c_question_label").classList.add("border", "border-success", "bg-light", "text-success");
+            } else {
+                answers_labels = document.getElementsByName("question_label");
+                answers_list = document.getElementsByName("question"+String(question));
+                for(i = 0; i < answers_list.length; i++){
+                    if (answers_list[i].checked){
+                        answers_labels[i].classList.add("border", "border-danger", "text-danger", "bg-light");
+                        document.getElementById("c_question_label").classList.add("border", "border-success", "bg-light", "text-success");
+                    }
+                }
+                correct_url = "";
+            }
+            let response = await fetch("/match?game=Trivia&difficulty={{questions_dict['difficulty']}}" + correct_url + start)
+            let result = await response.json();
+            if (result == '0'){
+                setTimeout(function(){
+                    document.getElementById("trivia-question").submit();
+                }, 1500);
+            }
+        });
+        var timer = setInterval(myTimer, 1000);
+        let span = document.getElementById('timer');
+        function myTimer() {
+            span.innerHTML = parseInt(span.innerHTML) - 1;
+            if (span.innerHTML <= 5) {
+                span.classList.remove("bg-success", "text-dark");
+                span.classList.add("bg-danger", "text-white");
+            }
+            if (span.innerHTML == 0){
+                clearInterval(timer);
+                document.getElementById("trivia-question").submit();
+            }
+        }
+    </script>
+{% endblock %}
